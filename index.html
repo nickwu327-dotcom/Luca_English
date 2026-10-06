@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-Hant"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>比其堡居民的單字庫</title>
+<title>比奇堡居民的單字庫</title>
 <style>
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
 --bg:#f4f6fa;--fg:#1f2937;--card:#fff;--navy:#1e3a5f;--navy2:#16304f;--teal:#0f8b8d;--teal2:#0b6f71;--bd:#dde3ec;--soft:#eef2f8;--ok:#13804a;--bad:#c0392b;--mut:#64748b}
@@ -58,7 +58,7 @@ tr:hover td{background:var(--soft)}
 h4{font-size:17px;color:var(--navy);border-left:4px solid var(--teal);padding-left:10px;margin:18px 0 6px}
 .row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--bd)}
 .row .w{font-size:21px;font-weight:600;min-width:140px;font-family:Georgia,serif}
-.row .p{flex:1;color:var(--mut);font-size:17px;font-family:"Lucida Sans Unicode","Segoe UI",sans-serif}
+.row{flex-wrap:wrap}.row .zh{color:var(--navy);font-weight:600;min-width:110px}select{font-size:16px;padding:9px 10px;border:1px solid var(--bd);border-radius:8px;background:var(--card);color:var(--fg);width:100%;font-family:inherit;margin:6px 0 16px}.row .p{flex:1;color:var(--mut);font-size:17px;font-family:"Lucida Sans Unicode","Segoe UI",sans-serif}
 .bar{height:8px;background:var(--soft);border-radius:999px;overflow:hidden;margin:8px 0 14px}
 .bar i{display:block;height:100%;background:var(--teal);border-radius:999px;transition:width .3s}
 @media(max-width:480px){.brand{font-size:22px}.wrap{padding:10px}.row .w{min-width:100px;font-size:19px}nav button{padding:10px 12px;font-size:15px}}
@@ -91,6 +91,11 @@ h4{font-size:17px;color:var(--navy);border-left:4px solid var(--teal);padding-le
 
 <section id="s3" class="hide"><div class="card"><b>選擇單字表</b><div class="weeks" id="rset"></div><b>選擇週次</b> <span class="muted" id="cwr"></span><div class="weeks" id="rw"></div></div>
 <div class="card" id="rout"></div></section>
+
+<section id="s4" class="hide"><div class="card"><b>發音口音</b><div class="weeks" id="stlang"></div>
+<b>發音聲音</b><div><select id="stvoice"></select></div>
+<b>語速</b> <span class="muted">(1 最慢 ~ 5 最快,預設 2)</span><div class="weeks" id="strate"></div>
+<button class="b" id="sttest">▶ 試聽</button><div class="muted" id="stnote" style="margin-top:6px"></div></div></section>
 </div>
 <script>
 const CET={
@@ -121,6 +126,7 @@ const FET={
 "15":"flammable|ˈflæməbəl;kindling|ˈkɪndlɪŋ;bark|bɑrk;birch tree|bərtʃ tri;match|mætʃ;strike|straɪk;smolder|sˈmoʊldər;accomplish|əˈkɑmplɪʃ;frustration|frəˈstreɪʃən;wince|wɪns",
 "16":"cave dweller|keɪv dˈwɛlər;examine|ɪgˈzæmɪn;staff|stæf;doze|doʊz;gesture|ˈdʒɛstʃər;register|ˈrɛdʒɪstər;stumble|ˈstəmbəl;rot|rɑt;quill|kwɪl;injury|ˈɪndʒəri",
 "17":"spark|spɑrk;charcoal|ˈtʃɑrˌkoʊl;glow|gloʊ;flue|flu;fine|faɪn;fluff|fləf;twig|twɪg;position|pəˈzɪʃən;limp|lɪmp;nick|nɪk"};
+const ZH={};"photographer=攝影師;all over=到處;moment=片刻;occasion=場合;suit=適合;striking=引人注目的;hurtful=傷人的;unusual=不尋常的;attractive=吸引人的;capture=捕捉;hockey=曲棍球;soccer=足球;country=國家;popular=受歡迎的;the rest of=其餘的;middle=中間;university=大學;athlete=運動員;interested in=對…感興趣;good at=擅長;tradition=傳統;observe=慶祝/觀察;frequently=經常;festive=節慶的;mark=紀念/標記;last=持續/最後的;set off=出發/引爆;prosperous=繁榮的;at the stroke of=在…鐘響時;look ahead=展望未來;roommate=室友;questionnaire=問卷;stay up=熬夜;messy=凌亂的;talkative=愛說話的;outgoing=外向的;private=私人的;easygoing=隨和的;bother=打擾;upset=難過的;author=作者;actually=其實;unfortunately=不幸地;nightmare=惡夢;meaning=意義;rapid=快速的;creative=有創意的;snore=打鼾;daydream=白日夢;come from=來自;international=國際的;across from=在…對面;certain=確定的;look alike=長得很像;selfie=自拍;departure=出發/離境;arrival=抵達;psychologist=心理學家;detective=偵探;client=客戶;comedy=喜劇;horror=恐怖片;animation=動畫;cough=咳嗽;scene=場景;work on=從事/致力於;go crazy=發瘋;day off=休假日;catch a cold=感冒;allergic=過敏的;feature=功能/特色;waterproof=防水的;rarely=很少;text=傳簡訊;run late=遲到;popularity=受歡迎程度;connect=連接;constantly=不斷地;endless=無盡的;addicted=上癮的;include=包括;luxury=奢華;aquarium=水族館;underground=地下的;ice rink=溜冰場;theme park=主題樂園;parking space=停車位;system=系統;locate=找出位置;stereo=音響;difficult=困難的;neat=整齊的;composition=作文;excellent=優秀的;handwriting=筆跡;right there=就在那裡;absent=缺席的;recognize=認出;childhood=童年;interpreter=口譯員;citizen=公民;immigration=移民/入境;immigrant=移民者;process=過程/處理;interrogation=審問;admit=承認/准許進入;prohibit=禁止;detain=拘留;laborer=勞工;merchant=商人;opportunity=機會;passport=護照;scholar=學者;diplomat=外交官;resemblance=相似;testify=作證;witness=目擊者/證人;transcript=成績單/謄本;affidavit=宣誓書;deportation=驅逐出境;arrangement=安排;pin=別針;coordinate=協調;claim=聲稱/索取;related=有關係的;nephew=姪子/外甥;eldest=最年長的;peculiarity=特點/怪癖;suspect=嫌疑犯/懷疑;reveal=揭露;report=報告;exclusion=排除;act=法案/行為;identity=身分;certificate=證書;make certain=確認;estimate=估計;experience=經驗;consider=考慮;official=官方的/官員;journal=日誌;discrimination=歧視;segregation=種族隔離;jim crow laws=吉姆·克勞法(種族隔離法);crop=農作物;sharecropper=佃農;cotton=棉花;boll weevil=棉鈴象鼻蟲;war effort=戰爭動員;integrated=融合的/廢除隔離的;current=目前的;harvest=收成;fertilizer=肥料;plow=犁/耕田;owe=欠;rent=租金/租;debt=債務;platform=月台/平台;assembly line=裝配線;manufacture=製造;community=社區;furniture=家具;bunk bed=雙層床;flight of stairs=一段樓梯;mile=英里;soak=浸泡;mutter=喃喃自語;chuckle=輕笑;talk back=頂嘴;ethnicity=族裔;struggling=掙扎的/奮鬥的;frown=皺眉;disrespectful=不尊重的;percentage=百分比;expect=期待/預期;cross one's fingers=祈求好運;belongings=財物;countryside=鄉間;resident=居民;get used to=習慣於;native=本地的;habitat=棲息地;population=族群/人口;restore=恢復;comeback=回復;migrating=遷徙的;creature=生物;chemical=化學物質;poison=毒藥;fungus=真菌;sensitive=敏感的;harm=傷害;extinct=絕種的;atmosphere=大氣層;global warming=全球暖化;fossil fuel=化石燃料;deformed=畸形的;shrink=縮小;depend on=依賴;food chain=食物鏈;shrub=灌木;fence=圍欄;temporary=暫時的;shallow=淺的;wetlands=濕地;woodlands=林地;convince=說服;propose=提議;force=強迫;devour=狼吞虎嚥;introduce=引進/介紹;spotted=有斑點的;burrow=洞穴/挖洞;dozen=一打;disease=疾病;develop=發展;drain=排水;dump=傾倒;damage=損害;disappear=消失;hatchet=小斧頭;fend for one's self=自力更生;ignite=點燃;sputter=劈啪作響;painstaking=煞費苦心的;gratify=使滿足;self-pity=自憐;calf=小腿;gingerly=小心翼翼地;jerk=猛拉;flammable=易燃的;kindling=引火柴;bark=樹皮;birch tree=樺樹;match=火柴;strike=劃(火柴)/擊打;smolder=悶燒;accomplish=完成;frustration=挫折感;wince=畏縮;cave dweller=穴居人;examine=檢查;staff=木杖/員工;doze=打瞌睡;gesture=手勢;register=登記/記錄;stumble=絆倒;rot=腐爛;quill=羽毛管/豪豬刺;injury=傷害;spark=火花;charcoal=木炭;glow=發光;flue=煙道;fine=細的;fluff=絨毛;twig=細枝;position=位置/姿勢;limp=軟趴趴的/跛行;nick=刻痕/小缺口".split(";").forEach(x=>{const i=x.indexOf("=");if(i>0)ZH[x.slice(0,i).toLowerCase()]=x.slice(i+1)});
 const G=[],GM={};
 [["CET",CET],["FET",FET]].forEach(([s,R])=>Object.keys(R).sort((a,b)=>parseInt(a)-parseInt(b)).forEach(k=>{
  const[a,b]=k.split("-").map(Number),f=a,t=b||a,g={id:s[0]+k,set:s,from:f,to:t,label:s+" 第"+(f===t?f:f+"&"+t)+"週",
@@ -136,7 +142,16 @@ tests.forEach(t=>{t.log.forEach(l=>{if(!l.g){const g=G.find(g=>g.set==="FET"&&g.
 const save=()=>{try{localStorage.setItem("vq_tests_g5",JSON.stringify(tests))}catch(e){}};
 const fmt=ts=>{const d=new Date(ts),p=n=>String(n).padStart(2,"0");return`${d.getFullYear()}/${p(d.getMonth()+1)}/${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`};
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
-const speak=t=>{try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t.replace(/\//g,","));u.lang="en-US";u.rate=.85;speechSynthesis.speak(u)}catch(e){}};
+let ST={lang:"en-US",voice:"",lv:2};
+const rateOf=()=>[.6,.75,.9,1.05,1.2][Math.min(5,Math.max(1,+ST.lv||2))-1];
+try{Object.assign(ST,JSON.parse(localStorage.getItem("vq_settings")||"{}"))}catch(e){}
+const saveST=()=>{try{localStorage.setItem("vq_settings",JSON.stringify(ST))}catch(e){}};
+const LANGS=[["en-US","美式英語 US"],["en-GB","英式英語 UK"]];
+if(!LANGS.some(x=>x[0]===ST.lang)){ST.lang="en-US";ST.voice=""}
+const nl=x=>x.lang.replace("_","-");
+const getVoices=()=>{try{return speechSynthesis.getVoices()}catch(e){return[]}};
+const speak=t=>{try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t.replace(/\//g,","));u.lang=ST.lang;u.rate=rateOf();
+ const vs=getVoices().filter(x=>nl(x)===ST.lang),v=vs.find(x=>x.voiceURI===ST.voice)||vs[0];if(v)u.voice=v;speechSynthesis.speak(u)}catch(e){}};
 const norm=s=>s.toLowerCase().trim().replace(/\s*\/\s*/g," / ").replace(/\s+/g," ");
 const gl=id=>GM[id]?GM[id].label:id;
 
@@ -144,9 +159,9 @@ function chips(id,items,isOn,click){const c=$(id);c.innerHTML="";items.forEach((
 const wkChips=(id,set,sel,cb)=>chips(id,G.filter(g=>!set||g.set===set).map(g=>[g.id,set?g.label.slice(4):g.label]),k=>sel.has(k),k=>{sel.has(k)?sel.delete(k):sel.add(k);wkChips(id,set,sel,cb);cb&&cb()});
 const order=sel=>G.filter(g=>sel.has(g.id)).map(g=>g.id);
 
-const TABS=["測驗","學習統計","學習狀況","單字複習"];
+const TABS=["測驗","學習統計","學習狀況","單字複習","設定"];
 TABS.forEach((n,i)=>{const b=document.createElement("button");b.textContent=n;b.onclick=()=>show(i);$("nav").appendChild(b)});
-function show(i){TABS.forEach((_,j)=>{$("s"+j).classList.toggle("hide",i!==j);$("nav").children[j].classList.toggle("on",i===j)});if(i===1)stats();if(i===2)status();if(i===3)review()}
+function show(i){TABS.forEach((_,j)=>{$("s"+j).classList.toggle("hide",i!==j);$("nav").children[j].classList.toggle("on",i===j)});if(i===1)stats();if(i===2)status();if(i===3)review();if(i===4)stRender()}
 const setChips=(id,cur,cb)=>chips(id,[["CET","CET"],["FET","FET"]],k=>k===cur,k=>{cb(k)});
 
 // quiz
@@ -212,7 +227,15 @@ let rSet="CET";const rSel=new Set(prevCur(rSet));
 function rRender(){setChips("rset",rSet,k=>{rSet=k;rSel.clear();prevCur(k).forEach(x=>rSel.add(x));rRender()});wkChips("rw",rSet,rSel,review);review()}
 $("cwr").textContent="(目前第 "+CUR+" 週,已自動勾選前週及當週)";
 function review(){const ids=order(rSel);
- $("rout").innerHTML=ids.length?ids.map(id=>`<h4 style="margin:10px 0 0">${GM[id].label}</h4>`+GM[id].words.map((x,i)=>`<div class="row"><span class="w">${x.w}</span><span class="p">${x.p?"/"+x.p+"/":""}</span><button class="b g" data-s="${id}|${i}">🔊</button></div>`).join("")).join(""):'<span class="muted">請選擇週次</span>'}
+ $("rout").innerHTML=ids.length?ids.map(id=>`<h4 style="margin:10px 0 0">${GM[id].label}</h4>`+GM[id].words.map((x,i)=>`<div class="row"><span class="w">${x.w}</span><span class="p">${x.p?"/"+x.p+"/":""}</span><span class="zh">${ZH[x.w.toLowerCase()]||""}</span><button class="b g" data-s="${id}|${i}">🔊</button></div>`).join("")).join(""):'<span class="muted">請選擇週次</span>'}
 $("rout").onclick=e=>{const s=e.target.dataset&&e.target.dataset.s;if(s){const[g,i]=s.split("|");speak(GM[g].words[i].w)}};
+function stRender(){chips("stlang",LANGS,k=>k===ST.lang,k=>{ST.lang=k;ST.voice="";saveST();stRender()});
+ chips("strate",[1,2,3,4,5].map(n=>[n,String(n)]),k=>k===(+ST.lv||2),k=>{ST.lv=k;saveST();stRender()});
+ const vs=getVoices().filter(x=>nl(x)===ST.lang),sel=$("stvoice");
+ sel.innerHTML='<option value="">自動(系統預設)</option>'+vs.map(v=>`<option value="${v.voiceURI.replace(/"/g,"&quot;")}">${v.name}</option>`).join("");sel.value=ST.voice;
+ $("stnote").textContent=vs.length?`此裝置有 ${vs.length} 個「${LANGS.find(x=>x[0]===ST.lang)[1]}」聲音可選`:"此裝置沒有這個口音的專用聲音,會改用系統預設英語聲音(可能聽不出差異)"}
+$("stvoice").onchange=e=>{ST.voice=e.target.value;saveST()};
+$("sttest").onclick=()=>speak("Hello! Apple, banana, neighbor, vocabulary.");
+try{speechSynthesis.onvoiceschanged=()=>{if(!$("s4").classList.contains("hide"))stRender()}}catch(e){}
 rRender();show(0);
 </script></body></html>
