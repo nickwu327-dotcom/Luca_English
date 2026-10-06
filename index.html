@@ -95,7 +95,8 @@ h4{font-size:17px;color:var(--navy);border-left:4px solid var(--teal);padding-le
 <section id="s4" class="hide"><div class="card"><b>發音口音</b><div class="weeks" id="stlang"></div>
 <b>發音聲音</b><div><select id="stvoice"></select></div>
 <b>語速</b> <span class="muted">(1 最慢 ~ 5 最快,預設 2)</span><div class="weeks" id="strate"></div>
-<button class="b" id="sttest">▶ 試聽</button><div class="muted" id="stnote" style="margin-top:6px"></div></div></section>
+<button class="b" id="sttest">▶ 試聽</button><div class="muted" id="stnote" style="margin-top:6px"></div></div>
+<div class="card sc"><b>本機可用的英文聲音</b><div class="muted" id="stallnote" style="margin:4px 0"></div><div id="stall"></div></div></section>
 </div>
 <script>
 const CET={
@@ -146,7 +147,7 @@ let ST={lang:"en-US",voice:"",lv:2};
 const rateOf=()=>[.6,.75,.9,1.05,1.2][Math.min(5,Math.max(1,+ST.lv||2))-1];
 try{Object.assign(ST,JSON.parse(localStorage.getItem("vq_settings")||"{}"))}catch(e){}
 const saveST=()=>{try{localStorage.setItem("vq_settings",JSON.stringify(ST))}catch(e){}};
-const LANGS=[["en-US","美式英語 US"],["en-GB","英式英語 UK"]];
+const LANGS=[["en-US","美式英語 US"],["en-GB","英式英語 UK"],["en-AU","澳洲英語 AU"],["en-CA","加拿大英語 CA"]];
 if(!LANGS.some(x=>x[0]===ST.lang)){ST.lang="en-US";ST.voice=""}
 const nl=x=>x.lang.replace("_","-");
 const getVoices=()=>{try{return speechSynthesis.getVoices()}catch(e){return[]}};
@@ -233,6 +234,9 @@ function stRender(){chips("stlang",LANGS,k=>k===ST.lang,k=>{ST.lang=k;ST.voice="
  chips("strate",[1,2,3,4,5].map(n=>[n,String(n)]),k=>k===(+ST.lv||2),k=>{ST.lv=k;saveST();stRender()});
  const vs=getVoices().filter(x=>nl(x)===ST.lang),sel=$("stvoice");
  sel.innerHTML='<option value="">自動(系統預設)</option>'+vs.map(v=>`<option value="${v.voiceURI.replace(/"/g,"&quot;")}">${v.name}</option>`).join("");sel.value=ST.voice;
+ const all=getVoices(),en=all.filter(x=>nl(x).toLowerCase().startsWith("en")).sort((a,b)=>nl(a).localeCompare(nl(b))||a.name.localeCompare(b.name));
+ $("stallnote").textContent=`本機共 ${all.length} 個聲音,其中英文 ${en.length} 個。目前網站可選口音:美式、英式、澳洲、加拿大。`;
+ $("stall").innerHTML=en.length?`<table><tr><th>口音(語言代碼)</th><th>聲音名稱</th><th>類型</th></tr>`+en.map(v=>`<tr><td>${nl(v)}</td><td>${v.name}</td><td>${v.localService?"本機":"線上"}</td></tr>`).join("")+"</table>":'<span class="muted">沒有偵測到英文聲音(部分瀏覽器需要稍等幾秒載入,請重新進入設定頁)</span>';
  $("stnote").textContent=vs.length?`此裝置有 ${vs.length} 個「${LANGS.find(x=>x[0]===ST.lang)[1]}」聲音可選`:"此裝置沒有這個口音的專用聲音,會改用系統預設英語聲音(可能聽不出差異)"}
 $("stvoice").onchange=e=>{ST.voice=e.target.value;saveST()};
 $("sttest").onclick=()=>speak("Hello! Apple, banana, neighbor, vocabulary.");
